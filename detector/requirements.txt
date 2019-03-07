@@ -1,0 +1,6 @@
+numpy==1.16.2
+pandas==0.24.1
+matplotlib==39.1.0
+wave==0.0.2
+saundfile==0.10.2
+
