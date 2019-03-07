@@ -2,10 +2,6 @@
 
 Program takes as input audio file (.wav) and checks if recording is corrupted - if includes sudden silent gap.
 
-
-
-
-
  === Installing ===
 
 To install required packages run: pip3 install -r requirements.txt
