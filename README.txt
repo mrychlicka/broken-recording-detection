@@ -13,7 +13,7 @@ To install required packages run: pip3 install -r requirements.txt
  === Steps ===
 
 1. Put audio file to folder in which script is located
-2. Run program by typing in terminal: python -m main.py [file_name.wav] where 'audio_file_name' is name of recording
+2. Run program by typing in terminal: python -m main.py [file_name.wav] where 'file_name' is name of recording
 3. First thing you will see is recording visualization plot, which you can zoom to analyse signal
 4. After closing plot window program returns output:
 [file_name] [valid] - in case file includes no sudden silence gap
