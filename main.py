@@ -53,9 +53,8 @@ def put_signal_to_dataframe(audio_file):
 
 
 FILENAME = sys.argv[1]
-# FILENAME = '/home/gosia/python/broken_recording_detection/nan-ai-file-2.wav'
 SAMPLE_RATE = get_audio_sample_rate(audio_file=FILENAME)
-FROM_SILENCE_TO_NOISE = 20
+FROM_SILENCE_TO_NOISE = 300
 MIN_SAMPLES_NUMBER_IN_GAP = 130
 
 draw_plot(audio_file=FILENAME)
@@ -83,10 +82,9 @@ start_gap_sample = 0
 gap_length = 0
 invalid = False
 for idx, sample_ampli in enumerate(dataframe[0]):
-	if idx >= start_signal_index and idx <= end_signal_index:
+	if start_signal_index <= idx <= end_signal_index:
 		if abs(sample_ampli) <= 1:
 			start_gap_sample = idx
-			# logging.info("start_gap_sample: ", start_gap_sample)
 			gap_length += 1
 		else:
 			gap_length = 0
