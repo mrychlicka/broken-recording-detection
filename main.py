@@ -54,7 +54,7 @@ def put_signal_to_dataframe(audio_file):
 
 FILENAME = sys.argv[1]
 SAMPLE_RATE = get_audio_sample_rate(audio_file=FILENAME)
-FROM_SILENCE_TO_NOISE = 300
+FROM_SILENCE_TO_NOISE = 50
 MIN_SAMPLES_NUMBER_IN_GAP = 130
 
 draw_plot(audio_file=FILENAME)
@@ -80,19 +80,24 @@ for sample_ampli in reversed(dataframe[0]):
 
 start_gap_sample = 0
 gap_length = 0
-invalid = False
-for idx, sample_ampli in enumerate(dataframe[0]):
-	if start_signal_index <= idx <= end_signal_index:
-		if abs(sample_ampli) <= 1:
-			start_gap_sample = idx
-			gap_length += 1
-		else:
-			gap_length = 0
 
-		if gap_length >= MIN_SAMPLES_NUMBER_IN_GAP:
-			invalid = True
-			print("{} {} {}".format(FILENAME, 'invalid', start_gap_sample - MIN_SAMPLES_NUMBER_IN_GAP))
-			break
+invalid = False
+last_high_frequency = 0
+for idx, sample_ampli in enumerate(dataframe[0]):
+	if sample_ampli > 1500:
+		last_high_frequency = idx
+	if start_signal_index <= idx <= end_signal_index:
+		if idx - last_high_frequency < 200:
+			if abs(sample_ampli) <= 1:
+				start_gap_sample = idx
+				gap_length += 1
+			else:
+				gap_length = 0
+
+			if gap_length >= MIN_SAMPLES_NUMBER_IN_GAP:
+				invalid = True
+				print("{} {} {}".format(FILENAME, 'invalid', start_gap_sample - MIN_SAMPLES_NUMBER_IN_GAP))
+				break
 
 if not invalid:
 	print('{} {}'.format(FILENAME, 'valid'))
