@@ -56,8 +56,10 @@ FILENAME = sys.argv[1]
 SAMPLE_RATE = get_audio_sample_rate(audio_file=FILENAME)
 FROM_SILENCE_TO_NOISE = 50
 MIN_SAMPLES_NUMBER_IN_GAP = 130
-SUDDEN_IDX_DISTANCE = 200
-HIGH_FREQUENCY = 1500
+HIGH_FREQUENCY = 1500  # frequency recognized as high
+SUDDEN_IDX_DISTANCE = 200  # indexes distance - if HIGH_FREQUENCY found in SUDDEN_IDX_DISTANCE before found silence gap,
+# then gap is recognized as sudden
+
 
 draw_plot(audio_file=FILENAME)
 dataframe = put_signal_to_dataframe(audio_file=FILENAME)
@@ -86,12 +88,12 @@ start_gap_sample = 0
 gap_length = 0
 
 invalid = False
-last_high_frequency = 0
+last_high_frequency_idx = 0
 for idx, sample_ampli in enumerate(dataframe[0]):
 	if sample_ampli > HIGH_FREQUENCY:
-		last_high_frequency = idx
+		last_high_frequency_idx = idx
 	if start_signal_index <= idx < end_signal_index:
-		if idx - last_high_frequency < SUDDEN_IDX_DISTANCE:
+		if idx - last_high_frequency_idx < SUDDEN_IDX_DISTANCE:
 			if abs(sample_ampli) <= 1:
 				start_gap_sample = idx
 				gap_length += 1
