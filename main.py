@@ -56,11 +56,14 @@ FILENAME = sys.argv[1]
 SAMPLE_RATE = get_audio_sample_rate(audio_file=FILENAME)
 FROM_SILENCE_TO_NOISE = 50
 MIN_SAMPLES_NUMBER_IN_GAP = 130
+SUDDEN_IDX_DISTANCE = 200
+HIGH_FREQUENCY = 1500
 
 draw_plot(audio_file=FILENAME)
 dataframe = put_signal_to_dataframe(audio_file=FILENAME)
 
-start_silence = 0  # eliminate audio start silence
+# eliminate audio start silence
+start_silence = 0
 start_signal_index = 0
 for sample_ampli in dataframe[0]:
 	start_signal_index += 1
@@ -69,7 +72,8 @@ for sample_ampli in dataframe[0]:
 	if start_silence > 50:
 		break
 
-end_silence = 0  # eliminate audio end silence
+# eliminate audio end silence
+end_silence = 0
 end_signal_index = get_audio_total_sample(FILENAME)
 for sample_ampli in reversed(dataframe[0]):
 	end_signal_index -= 1
@@ -84,10 +88,10 @@ gap_length = 0
 invalid = False
 last_high_frequency = 0
 for idx, sample_ampli in enumerate(dataframe[0]):
-	if sample_ampli > 1500:
+	if sample_ampli > HIGH_FREQUENCY:
 		last_high_frequency = idx
-	if start_signal_index <= idx <= end_signal_index:
-		if idx - last_high_frequency < 200:
+	if start_signal_index <= idx < end_signal_index:
+		if idx - last_high_frequency < SUDDEN_IDX_DISTANCE:
 			if abs(sample_ampli) <= 1:
 				start_gap_sample = idx
 				gap_length += 1
